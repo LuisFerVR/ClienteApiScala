@@ -1,25 +1,45 @@
 <div class="d-flex col-12 flex-column justify-content-center align-items-center">
-  <div class="mt-4 col-4">
+  <div class="col-4 mt-4">
     <h3>Registro de Torneo</h3>
     <form #torneoForm="ngForm" (ngSubmit)="onSubmit(torneoForm)">
       <div class="form-group">
         <label for="nombre">Nombre del torneo:</label>
         <input 
-        type="text" 
-        class="form-control" 
-        id="nombre"
-        name="nombre"
-        [(ngModel)]="torneo.nombre"
-        required
-        maxlength="15"
-        #nombre="ngModel">
-        <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="alert alert-danger">
-          <div *ngIf="nombre.errors?.['required']">El nombre es requerido</div>
-          <div *ngIf="nombre.errors?.['maxlength']">El nombre no puede exceder 15 caracteres</div>
+          type="text"
+          class="form-control"
+          id="nombre"
+          name="nombre"
+          [(ngModel)]="nombre"
+          required
+          #nombreInput="ngModel">
+        <div *ngIf="nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)" class="alert alert-danger">
+          <div *ngIf="nombreInput.errors?.['required']">El nombre es requerido</div>
+        </div>
+      </div>
+
+      <div class="form-group mt-3">
+        <label for="equipos">Equipos Participantes</label>
+        <select 
+          multiple
+          class="form-control" 
+          id="equipos"
+          name="equipos"
+          [(ngModel)]="equiposSeleccionados"
+          required
+          #equipos="ngModel">
+          <option *ngFor="let equipo of equiposDisponibles" [value]="equipo.id">
+            {{equipo.nombre}}
+          </option>
+        </select>
+        <small class="form-text text-muted">
+          Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples equipos
+        </small>
+        <div *ngIf="equipos.invalid && (equipos.dirty || equipos.touched)" class="alert alert-danger">
+          <div *ngIf="equipos.errors?.['required']">Debe seleccionar al menos un equipo</div>
         </div>
       </div>
       
-      <button type="submit" class="btn btn-success mt-3" [disabled]="torneoForm.invalid">
+      <button type="submit" class="btn btn-primary mt-3" [disabled]="torneoForm.invalid">
         Registrar Torneo
       </button>
     </form>

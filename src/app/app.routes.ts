@@ -13,10 +13,14 @@ export const routes: Routes = [
     },
     {
         path: 'jugador',
-        loadComponent:()=>import('./club-list/club/club.component').then(m=>m.ClubComponent)
+        loadComponent:()=>import('./jugador/jugador.component').then(m=>m.JugadorComponent)
     },
     {
-        path: 'torneo',
-        loadComponent:()=>import('./club-list/club/club.component').then(m=>m.ClubComponent)
+        path:'torneo',
+        loadComponent:()=>import('./tournament-list/tournament-list.component').then(m=>m.TournamentListComponent)
+    },
+    {
+        path:'**',
+        redirectTo:''
     }
 ];

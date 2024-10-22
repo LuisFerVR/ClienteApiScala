@@ -12,11 +12,18 @@ import { FormsModule } from '@angular/forms';
 export class TournamentListComponent {
   nombre: string = '';
   equiposSeleccionados: number[] = [];
+  torneoRegistrado = false;
+  
   equiposDisponibles: Array<{id:number, nombre:string}> = [
     { id: 1, nombre: 'Equipo A' },
     { id: 2, nombre: 'Equipo B' },
     { id: 3, nombre: 'Equipo C' }
   ];
+
+  cleanData(){
+    this.nombre = '';
+    this.equiposSeleccionados = [];
+  }
 
   onSubmit(form: any) {
     if (form.valid) {
@@ -26,11 +33,15 @@ export class TournamentListComponent {
       };
       
       console.log('Torneo a registrar:', torneoEquipos);
-      
+      this.torneoRegistrado = true;
       // Reseteamos el formulario completo
-      this.nombre = '';
-      this.equiposSeleccionados = [];
+      this.cleanData()
       form.resetForm();
     }
+  }
+
+  onDelete(){
+    this.torneoRegistrado = false;
+    this.cleanData();
   }
 }

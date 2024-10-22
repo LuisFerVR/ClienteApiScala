@@ -77,17 +77,17 @@
     </form>
   </div>
 
-  <div class="card text-center col-4 my-4">
+  <!-- Aquí se muestran los datos del jugador registrado -->
+  <div *ngIf="jugadorRegistrado" class="card text-center col-4 my-4">
     <div class="card-header">
-      <h4>Jugador</h4>
+      <h4>{{ jugadorRegistradoData.nombre }}</h4>
     </div>
     <div class="card-body">
-      <p class="card-text">Nombre</p>
-      <p class="card-text">Posición</p>
-      <p class="card-text">Dorsal</p>
+      <p class="card-text">Posición: {{ jugadorRegistradoData.posicion }}</p>
+      <p class="card-text">Dorsal: {{ jugadorRegistradoData.dorsal }}</p>
     </div>
     <div class="card-footer text-body-secondary">
-      <button type="button" class="btn btn-danger">Eliminar</button>
+      <button type="button" class="btn btn-danger" (click)="eliminarJugador()">Eliminar</button>
     </div>
   </div>
 </div>

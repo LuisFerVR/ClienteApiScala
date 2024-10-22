@@ -1,6 +1,33 @@
-<div class="card text-center col-4">
+<div class="d-flex col-12 flex-column justify-content-center align-items-center">
+  <div class="mt-4 col-4">
+    <h3>Registro de Torneo</h3>
+    <form #torneoForm="ngForm" (ngSubmit)="onSubmit(torneoForm)">
+      <div class="form-group">
+        <label for="nombre">Nombre del torneo:</label>
+        <input 
+        type="text" 
+        class="form-control" 
+        id="nombre"
+        name="nombre"
+        [(ngModel)]="torneo.nombre"
+        required
+        maxlength="15"
+        #nombre="ngModel">
+        <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="alert alert-danger">
+          <div *ngIf="nombre.errors?.['required']">El nombre es requerido</div>
+          <div *ngIf="nombre.errors?.['maxlength']">El nombre no puede exceder 15 caracteres</div>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-success mt-3" [disabled]="torneoForm.invalid">
+        Registrar Torneo
+      </button>
+    </form>
+  </div>
+  
+  <div class="card text-center col-4 my-4">
     <div class="card-header">
-        <h4>Torneo A</h4>
+      <h4>Torneo A</h4>
     </div>
     <div class="card-body">
       <h6 class="card-title">Participantes</h6>
@@ -8,4 +35,5 @@
       <p class="card-text">Equipo B</p>
     </div>
     <div class="card-footer text-body-secondary"><button type="button" class="btn btn-danger">Eliminar</button></div>
+  </div>
 </div>

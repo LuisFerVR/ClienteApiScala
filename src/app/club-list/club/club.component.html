@@ -1,9 +1,68 @@
-<div class="card text-center col-4">
-  <div class="card-header"><h4>Equipo 1</h4></div>
-  <div class="card-body">
-    <h6 class="card-title">Plantilla</h6>
-    <p class="card-text">Jugador A</p>
-    <p class="card-text">Jugador B</p>
+<div class="d-flex flex-column align-items-center justify-content-center">
+  <div class="mt-4">
+    <h3>Registro de Equipo</h3>
+    <form #equipoForm="ngForm" (ngSubmit)="onSubmit(equipoForm)">
+      <div class="form-group">
+        <label for="nombre">Nombre del Equipo</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          name="nombre"
+          [(ngModel)]="equipo.nombre"
+          required
+          maxlength="15"
+          #nombre="ngModel"
+        />
+        <div
+          *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)"
+          class="alert alert-danger"
+        >
+          <div *ngIf="nombre.errors?.['required']">El nombre es requerido</div>
+          <div *ngIf="nombre.errors?.['maxlength']">
+            El nombre no puede exceder 15 caracteres
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group mt-3">
+        <label for="jugador_id">Jugador</label>
+        <select 
+          class="form-control" 
+          id="jugador_id"
+          name="jugador_id"
+          [(ngModel)]="equipo.jugador_id"
+          required
+          #jugadorId="ngModel">
+          <option value="" hidden>Seleccione un jugador</option>
+          <option *ngFor="let jugador of jugadores" [value]="jugador.id">
+            {{jugador.nombre}}
+          </option>
+        </select>
+        <div *ngIf="jugadorId.invalid && (jugadorId.dirty || jugadorId.touched)" class="alert alert-danger">
+          <div *ngIf="jugadorId.errors?.['required']">Debe seleccionar un jugador</div>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-success mt-3"
+        [disabled]="equipoForm.invalid"
+      >
+        Registrar Equipo
+      </button>
+    </form>
   </div>
-  <div class="card-footer text-body-secondary"><button type="button" class="btn btn-danger">Eliminar</button></div>
+
+  <div class="card text-center col-4 my-4">
+    <div class="card-header"><h4>Equipo 1</h4></div>
+    <div class="card-body">
+      <h6 class="card-title">Plantilla</h6>
+      <p class="card-text">Jugador A</p>
+      <p class="card-text">Jugador B</p>
+    </div>
+    <div class="card-footer text-body-secondary">
+      <button type="button" class="btn btn-danger">Eliminar</button>
+    </div>
+  </div>
 </div>

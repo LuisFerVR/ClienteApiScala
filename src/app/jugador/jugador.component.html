@@ -96,7 +96,6 @@
       <div
         *ngFor="let jugador of jugadores"
         class="card my-2"
-        [class.border-primary]="jugador.id === this.jugador.id"
         style="cursor: pointer;"
         (click)="editarJugador(jugador)"
       >

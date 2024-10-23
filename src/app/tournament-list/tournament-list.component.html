@@ -1,8 +1,6 @@
-<div
-  class="d-flex col-12 flex-column justify-content-center align-items-center"
->
+<div class="d-flex col-12 flex-column justify-content-center align-items-center">
   <div class="col-4 mt-4">
-    <h3>Registro de Torneo</h3>
+    <h3>{{ modoEdicion ? 'Editar Torneo' : 'Registro de Torneo' }}</h3>
     <form #torneoForm="ngForm" (ngSubmit)="onSubmit(torneoForm)">
       <div class="form-group">
         <label for="nombre">Nombre del torneo:</label>
@@ -16,9 +14,7 @@
           #nombreInput="ngModel"
         />
         <div
-          *ngIf="
-            nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)
-          "
+          *ngIf="nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)"
           class="alert alert-danger"
         >
           <div *ngIf="nombreInput.errors?.['required']">
@@ -55,27 +51,35 @@
         </div>
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-success mt-3"
-        [disabled]="torneoForm.invalid"
-      >
-        Registrar Torneo
-      </button>
+      <div class="mt-3">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="torneoForm.invalid"
+        >
+          {{ modoEdicion ? 'Actualizar' : 'Registrar' }} Torneo
+        </button>
+        <button
+          *ngIf="modoEdicion"
+          type="button"
+          class="btn btn-secondary ms-2"
+          (click)="cleanData()"
+        >
+          Cancelar
+        </button>
+      </div>
     </form>
   </div>
 
   <div class="col-12 mt-4 d-flex flex-column align-items-center">
     <h3>Torneos Registrados</h3>
 
-    <!-- Mostrar mensaje si no hay torneos registrados -->
-    <div *ngIf="torneos.length === 0" class="alert alert-success mt-3 col-4 text-center">
+    <div *ngIf="torneos.length === 0" class="alert alert-info mt-3 col-4 text-center">
       <p>No hay torneos registrados.</p>
     </div>
 
     <div class="d-flex gap-3 flex-wrap">
-      <!-- Mostrar tarjetas si hay torneos -->
-      <div *ngFor="let torneo of torneos; let i = index" class="card my-2">
+      <div *ngFor="let torneo of torneos" class="card my-2" (click)="onEdit(torneo)" style="cursor: pointer;">
         <div class="card-header">
           <h4>{{ torneo.nombre }}</h4>
         </div>
@@ -85,8 +89,8 @@
             {{ obtenerNombreEquipo(equipoId) }}
           </p>
         </div>
-        <div class="card-footer text-body-secondary">
-          <button type="button" class="btn btn-danger" (click)="onDelete(i)">
+        <div class="card-footer">
+          <button type="button" class="btn btn-danger" (click)="onDelete(torneo.id!)">
             Eliminar
           </button>
         </div>

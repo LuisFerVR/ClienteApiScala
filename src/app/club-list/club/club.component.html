@@ -87,7 +87,7 @@
       No hay equipos registrados.
     </div>
     <div class="d-flex gap-3 flex-wrap">
-      <div *ngFor="let equipo of equipos" class="card my-2" (click)="editarEquipo(equipo)">
+      <div *ngFor="let equipo of equipos" class="card my-2" (click)="editarEquipo(equipo)"style="cursor: pointer;">
         <div class="card-header">
           <h4>{{ equipo.nombre }}</h4>
         </div>

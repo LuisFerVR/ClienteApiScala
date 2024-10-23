@@ -1,11 +1,9 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
-interface Equipo {
-  nombre: string;
-  jugadores: number[];
-}
+import { Component, OnInit } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { Club } from '../../shared/models/club.model';
+import { Jugador } from '../../shared/models/jugador.model';
+import { ClubService } from '../club/club.service';
 
 @Component({
   selector: 'app-club',
@@ -14,45 +12,122 @@ interface Equipo {
   templateUrl: './club.component.html',
   styleUrls: ['./club.component.css']
 })
-export class ClubComponent {
-  equipo: Equipo = {
+export class ClubComponent implements OnInit {
+  equipo: Club = {
     nombre: '',
     jugadores: []
   };
+  equipos: Club[] = [];
+  jugadoresDisponibles: Jugador[] = [];
+  loading = false;
+  error = '';
 
-  equipos: Equipo[] = [];  // Lista para almacenar los equipos registrados
+  constructor(private clubService: ClubService) {}
 
-  jugadoresDisponibles: Array<{ id: number, nombre: string }> = [
-    { id: 1, nombre: 'Juan Pérez' },
-    { id: 2, nombre: 'María García' },
-    { id: 3, nombre: 'Carlos López' }
-  ];
+  ngOnInit() {
+    this.cargarDatos();
+  }
 
-  onSubmit(form: any) {
+  cargarDatos() {
+    this.loading = true;
+    // Cargar equipos y jugadores
+    this.clubService.getEquipos().subscribe({
+      next: (equipos) => {
+        this.equipos = equipos;
+        this.cargarJugadores();
+      },
+      error: (error) => {
+        console.error('Error al cargar equipos:', error);
+        this.error = 'Error al cargar los equipos';
+        this.loading = false;
+      }
+    });
+  }
+
+  cargarJugadores() {
+    this.clubService.getJugadores().subscribe({
+      next: (jugadores) => {
+        this.jugadoresDisponibles = jugadores;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar jugadores:', error);
+        this.error = 'Error al cargar los jugadores';
+        this.loading = false;
+      }
+    });
+  }
+
+  // Nueva función para editar un equipo
+  editarEquipo(equipo: Club) {
+    this.equipo = { ...equipo }; // Cargar los datos del equipo seleccionado en el formulario
+  }
+
+  onSubmit(form: NgForm) {
     if (form.valid) {
-      // Guardamos una copia del equipo en el array
-      this.equipos.push({
-        nombre: this.equipo.nombre,
-        jugadores: [...this.equipo.jugadores]
-      });
-      
-      console.log('Equipo registrado:', this.equipos[this.equipos.length - 1]);
-      
-      // Reseteamos el formulario
-      this.equipo = {
-        nombre: '',
-        jugadores: []
-      };
-      form.resetForm();
+      this.loading = true;
+      if (this.equipo.id) {
+        // Actualizar equipo existente
+        this.clubService.updateEquipo(this.equipo.id, this.equipo).subscribe({
+          next: () => {
+            this.cargarDatos();
+            this.resetForm(form);
+          },
+          error: (error) => {
+            console.error('Error al actualizar equipo:', error);
+            this.error = 'Error al actualizar el equipo';
+            this.loading = false;
+          }
+        });
+      } else {
+        // Crear nuevo equipo
+        this.clubService.createEquipo(this.equipo).subscribe({
+          next: () => {
+            this.cargarDatos();
+            this.resetForm(form);
+          },
+          error: (error) => {
+            console.error('Error al crear equipo:', error);
+            this.error = 'Error al crear el equipo';
+            this.loading = false;
+          }
+        });
+      }
     }
   }
 
-  eliminarEquipo(index: number) {
-    this.equipos.splice(index, 1);
+  eliminarEquipo(id: number) {
+    if (confirm('¿Está seguro de eliminar este equipo?')) {
+      this.loading = true;
+      this.clubService.deleteEquipo(id).subscribe({
+        next: () => {
+          this.cargarDatos();
+        },
+        error: (error) => {
+          console.error('Error al eliminar equipo:', error);
+          this.error = 'Error al eliminar el equipo';
+          this.loading = false;
+        }
+      });
+    }
   }
 
   obtenerNombreJugador(id: number): string {
     const jugador = this.jugadoresDisponibles.find(j => j.id === id);
     return jugador ? jugador.nombre : 'Jugador no encontrado';
+  }
+
+  public resetForm(form?: NgForm) {
+    if (form) {
+      form.resetForm();
+    }
+    this.equipo = {
+      nombre: '',
+      jugadores: []
+    };
+  }
+
+  hasJugadores(equipo: any): boolean {
+    return equipo.jugadores && equipo.jugadores.length > 0;
   }
 }

@@ -1,41 +1,44 @@
-import { NgIf } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+interface Jugador {
+  nombre: string;
+  posicion: string;
+  dorsal: number | null;
+}
 
 @Component({
   selector: 'app-jugador',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, NgFor],
   templateUrl: './jugador.component.html',
   styleUrls: ['./jugador.component.css']
 })
 export class JugadorComponent {
-  jugador = {
+  jugador: Jugador = {
     nombre: '',
     posicion: '',
     dorsal: null
   };
 
-  jugadorRegistrado = false;
-  jugadorRegistradoData: any = null;  // Variable para mantener los datos registrados del jugador
+  jugadores: Jugador[] = [];  // Array para almacenar múltiples jugadores
 
   onSubmit(form: any) {
     if (form.valid) {
       console.log('Jugador a registrar:', this.jugador);
       
-      // Guardamos los datos del jugador antes de resetear el formulario
-      this.jugadorRegistradoData = { ...this.jugador };
-
-      // Limpiar los campos del formulario, pero mantener los valores del jugador en la tarjeta
+      // Agregamos el jugador al array
+      this.jugadores.push({ ...this.jugador });
+      
+      // Limpiamos el formulario
       form.resetForm();
       this.jugador = { nombre: '', posicion: '', dorsal: null };
-
-      this.jugadorRegistrado = true;  // Mostramos la tarjeta con los datos del jugador
     }
   }
 
-  eliminarJugador() {
-    this.jugadorRegistrado = false;  // Ocultamos la tarjeta cuando eliminamos al jugador
-    this.jugadorRegistradoData = null;  // Limpiamos los datos del jugador
+  eliminarJugador(index: number) {
+    // Eliminamos el jugador del array usando su índice
+    this.jugadores.splice(index, 1);
   }
 }

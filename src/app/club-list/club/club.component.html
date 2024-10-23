@@ -1,59 +1,106 @@
-<div class="d-flex col-12 flex-column justify-content-center align-items-center">
-  <div class="col-4 mt-4">
+<div class="d-flex flex-column align-items-center justify-content-center">
+  <div class="mt-4">
     <h3>Registro de Equipo</h3>
     <form #equipoForm="ngForm" (ngSubmit)="onSubmit(equipoForm)">
       <div class="form-group">
         <label for="nombre">Nombre del equipo:</label>
-        <input 
+        <input
           type="text"
           class="form-control"
           id="nombre"
           name="nombre"
           [(ngModel)]="equipo.nombre"
           required
-          #nombreInput="ngModel">
-        <div *ngIf="nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)" class="alert alert-danger">
-          <div *ngIf="nombreInput.errors?.['required']">El nombre es requerido</div>
+          #nombreInput="ngModel"
+        />
+        <div
+          *ngIf="
+            nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)
+          "
+          class="alert alert-danger"
+        >
+          <div *ngIf="nombreInput.errors?.['required']">
+            El nombre es requerido
+          </div>
         </div>
       </div>
 
       <div class="form-group mt-3">
         <label for="jugadores">Jugadores del equipo</label>
-        <select 
+        <select
           multiple
-          class="form-control" 
+          class="form-control"
           id="jugadores"
           name="jugadores"
           [(ngModel)]="equipo.jugadores"
           required
-          #jugadoresSelect="ngModel">
-          <option *ngFor="let jugador of jugadoresDisponibles" [value]="jugador.id">
-            {{jugador.nombre}}
+          #jugadoresSelect="ngModel"
+        >
+          <option
+            *ngFor="let jugador of jugadoresDisponibles"
+            [value]="jugador.id"
+          >
+            {{ jugador.nombre }}
           </option>
         </select>
         <small class="form-text text-muted">
-          Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples jugadores
+          Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples
+          jugadores
         </small>
-        <div *ngIf="jugadoresSelect.invalid && (jugadoresSelect.dirty || jugadoresSelect.touched)" class="alert alert-danger">
-          <div *ngIf="jugadoresSelect.errors?.['required']">Debe seleccionar al menos un jugador</div>
+        <div
+          *ngIf="
+            jugadoresSelect.invalid &&
+            (jugadoresSelect.dirty || jugadoresSelect.touched)
+          "
+          class="alert alert-danger"
+        >
+          <div *ngIf="jugadoresSelect.errors?.['required']">
+            Debe seleccionar al menos un jugador
+          </div>
         </div>
       </div>
-      
-      <button type="submit" class="btn btn-primary mt-3" [disabled]="equipoForm.invalid">
+
+      <button
+        type="submit"
+        class="btn btn-success mt-3"
+        [disabled]="equipoForm.invalid"
+      >
         Registrar Equipo
       </button>
     </form>
   </div>
-  
-  <div class="card text-center col-4 my-4">
-    <div class="card-header">
-      <h4>Equipo 1</h4>
+
+  <!-- Lista de equipos registrados -->
+  <div class="col-12 mt-4 d-flex flex-column align-items-center">
+    <h3>Equipos Registrados</h3>
+
+    <!-- Mostrar mensaje si no hay equipos registrados -->
+    <div *ngIf="equipos.length === 0" class="alert alert-success mt-3">
+      No hay equipos registrados.
     </div>
-    <div class="card-body">
-      <h6 class="card-title">Plantilla</h6>
-      <p class="card-text">Jugador A</p>
-      <p class="card-text">Jugador B</p>
+
+    <div class="d-flex gap-3 flex-wrap">
+      <!-- Mostrar tarjetas si hay equipos -->
+      <div *ngFor="let equipo of equipos; let i = index" class="card my-2">
+        <div class="card-header">
+          <h4>{{ equipo.nombre }}</h4>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title">Plantilla</h6>
+          <p class="card-text" *ngFor="let jugadorId of equipo.jugadores">
+            {{ obtenerNombreJugador(jugadorId) }}
+          </p>
+        </div>
+        <div class="card-footer text-body-secondary">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="eliminarEquipo(i)"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="card-footer text-body-secondary"><button type="button" class="btn btn-danger">Eliminar</button></div>
   </div>
 </div>

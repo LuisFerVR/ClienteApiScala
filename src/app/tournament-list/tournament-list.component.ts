@@ -5,43 +5,48 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-tournament-list',
   standalone: true,
-  imports: [FormsModule,NgIf, NgFor],
+  imports: [FormsModule, NgIf, NgFor],
   templateUrl: './tournament-list.component.html',
   styleUrl: './tournament-list.component.css'
 })
 export class TournamentListComponent {
   nombre: string = '';
   equiposSeleccionados: number[] = [];
-  torneoRegistrado = false;
+  torneos: Array<{ nombre: string, equipos: number[] }> = [];
   
-  equiposDisponibles: Array<{id:number, nombre:string}> = [
+  equiposDisponibles: Array<{ id: number, nombre: string }> = [
     { id: 1, nombre: 'Equipo A' },
     { id: 2, nombre: 'Equipo B' },
     { id: 3, nombre: 'Equipo C' }
   ];
 
-  cleanData(){
+  cleanData() {
     this.nombre = '';
     this.equiposSeleccionados = [];
   }
 
   onSubmit(form: any) {
     if (form.valid) {
-      const torneoEquipos = {
+      const nuevoTorneo = {
         nombre: this.nombre,
-        equipos: this.equiposSeleccionados
+        equipos: [...this.equiposSeleccionados] // Clonamos los equipos
       };
-      
-      console.log('Torneo a registrar:', torneoEquipos);
-      this.torneoRegistrado = true;
-      // Reseteamos el formulario completo
-      this.cleanData()
+
+      this.torneos.push(nuevoTorneo);
+      console.log('Torneos registrados:', this.torneos);
+
+      this.cleanData();
       form.resetForm();
     }
   }
 
-  onDelete(){
-    this.torneoRegistrado = false;
-    this.cleanData();
+  onDelete(index: number) {
+    this.torneos.splice(index, 1);
+  }
+
+  // Método para obtener el nombre del equipo según su ID
+  obtenerNombreEquipo(equipoId: number): string {
+    const equipo = this.equiposDisponibles.find(e => e.id === equipoId);
+    return equipo ? equipo.nombre : 'Equipo no encontrado';
   }
 }

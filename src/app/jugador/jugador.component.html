@@ -77,17 +77,33 @@
     </form>
   </div>
 
-  <!-- Aquí se muestran los datos del jugador registrado -->
-  <div *ngIf="jugadorRegistrado" class="card text-center col-4 my-4">
-    <div class="card-header">
-      <h4>{{ jugadorRegistradoData.nombre }}</h4>
+  <!-- Lista de jugadores registrados -->
+  <div class="col-12 mt-4 d-flex flex-column align-items-center">
+    <!-- Mostrar mensaje si no hay jugadores registrados -->
+    <div *ngIf="jugadores.length === 0" class="alert alert-success mt-3">
+      No hay jugadores registrados.
     </div>
-    <div class="card-body">
-      <p class="card-text">Posición: {{ jugadorRegistradoData.posicion }}</p>
-      <p class="card-text">Dorsal: {{ jugadorRegistradoData.dorsal }}</p>
-    </div>
-    <div class="card-footer text-body-secondary">
-      <button type="button" class="btn btn-danger" (click)="eliminarJugador()">Eliminar</button>
+    <div class="d-flex gap-3 flex-wrap">
+      <!-- Mostrar tarjetas si hay jugadores -->
+      <div *ngFor="let jugador of jugadores; let i = index" class="card my-2">
+        <div class="card-header">
+          <h4>{{ jugador.nombre }}</h4>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title">Detalles del Jugador</h6>
+          <p class="card-text">Posición: {{ jugador.posicion }}</p>
+          <p class="card-text">Dorsal: {{ jugador.dorsal }}</p>
+        </div>
+        <div class="card-footer text-body-secondary">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="eliminarJugador(i)"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

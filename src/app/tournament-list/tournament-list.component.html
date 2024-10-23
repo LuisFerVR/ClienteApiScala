@@ -1,59 +1,96 @@
-<div class="d-flex col-12 flex-column justify-content-center align-items-center">
+<div
+  class="d-flex col-12 flex-column justify-content-center align-items-center"
+>
   <div class="col-4 mt-4">
     <h3>Registro de Torneo</h3>
     <form #torneoForm="ngForm" (ngSubmit)="onSubmit(torneoForm)">
       <div class="form-group">
         <label for="nombre">Nombre del torneo:</label>
-        <input 
+        <input
           type="text"
           class="form-control"
           id="nombre"
           name="nombre"
           [(ngModel)]="nombre"
           required
-          #nombreInput="ngModel">
-        <div *ngIf="nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)" class="alert alert-danger">
-          <div *ngIf="nombreInput.errors?.['required']">El nombre es requerido</div>
+          #nombreInput="ngModel"
+        />
+        <div
+          *ngIf="
+            nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)
+          "
+          class="alert alert-danger"
+        >
+          <div *ngIf="nombreInput.errors?.['required']">
+            El nombre es requerido
+          </div>
         </div>
       </div>
 
       <div class="form-group mt-3">
         <label for="equipos">Equipos Participantes</label>
-        <select 
+        <select
           multiple
-          class="form-control" 
+          class="form-control"
           id="equipos"
           name="equipos"
           [(ngModel)]="equiposSeleccionados"
           required
-          #equipos="ngModel">
+          #equipos="ngModel"
+        >
           <option *ngFor="let equipo of equiposDisponibles" [value]="equipo.id">
-            {{equipo.nombre}}
+            {{ equipo.nombre }}
           </option>
         </select>
         <small class="form-text text-muted">
           Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples equipos
         </small>
-        <div *ngIf="equipos.invalid && (equipos.dirty || equipos.touched)" class="alert alert-danger">
-          <div *ngIf="equipos.errors?.['required']">Debe seleccionar al menos un equipo</div>
+        <div
+          *ngIf="equipos.invalid && (equipos.dirty || equipos.touched)"
+          class="alert alert-danger"
+        >
+          <div *ngIf="equipos.errors?.['required']">
+            Debe seleccionar al menos un equipo
+          </div>
         </div>
       </div>
-      
-      <button type="submit" class="btn btn-primary mt-3" [disabled]="torneoForm.invalid">
+
+      <button
+        type="submit"
+        class="btn btn-success mt-3"
+        [disabled]="torneoForm.invalid"
+      >
         Registrar Torneo
       </button>
     </form>
   </div>
-  
-  <div class="card text-center col-4 my-4" *ngIf="torneoRegistrado">
-    <div class="card-header">
-      <h4>Torneo A</h4>
+
+  <div class="col-12 mt-4 d-flex flex-column align-items-center">
+    <h3>Torneos Registrados</h3>
+
+    <!-- Mostrar mensaje si no hay torneos registrados -->
+    <div *ngIf="torneos.length === 0" class="alert alert-success mt-3 col-4 text-center">
+      <p>No hay torneos registrados.</p>
     </div>
-    <div class="card-body">
-      <h6 class="card-title">Participantes</h6>
-      <p class="card-text">Equipo A</p>
-      <p class="card-text">Equipo B</p>
+
+    <div class="d-flex gap-3 flex-wrap">
+      <!-- Mostrar tarjetas si hay torneos -->
+      <div *ngFor="let torneo of torneos; let i = index" class="card my-2">
+        <div class="card-header">
+          <h4>{{ torneo.nombre }}</h4>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title">Participantes</h6>
+          <p class="card-text" *ngFor="let equipoId of torneo.equipos">
+            {{ obtenerNombreEquipo(equipoId) }}
+          </p>
+        </div>
+        <div class="card-footer text-body-secondary">
+          <button type="button" class="btn btn-danger" (click)="onDelete(i)">
+            Eliminar
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="card-footer text-body-secondary"><button type="button" class="btn btn-danger" (click)="onDelete()">Eliminar</button></div>
   </div>
 </div>

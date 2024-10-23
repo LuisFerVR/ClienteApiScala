@@ -2,6 +2,11 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+interface Equipo {
+  nombre: string;
+  jugadores: number[];
+}
+
 @Component({
   selector: 'app-club',
   standalone: true,
@@ -10,10 +15,12 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./club.component.css']
 })
 export class ClubComponent {
-  equipo = {
+  equipo: Equipo = {
     nombre: '',
-    jugadores: [] as number[] // Lista de IDs de jugadores seleccionados
+    jugadores: []
   };
+
+  equipos: Equipo[] = [];  // Lista para almacenar los equipos registrados
 
   jugadoresDisponibles: Array<{ id: number, nombre: string }> = [
     { id: 1, nombre: 'Juan Pérez' },
@@ -23,17 +30,29 @@ export class ClubComponent {
 
   onSubmit(form: any) {
     if (form.valid) {
-      const equipoRegistrado = {
+      // Guardamos una copia del equipo en el array
+      this.equipos.push({
         nombre: this.equipo.nombre,
-        jugadores: this.equipo.jugadores
+        jugadores: [...this.equipo.jugadores]
+      });
+      
+      console.log('Equipo registrado:', this.equipos[this.equipos.length - 1]);
+      
+      // Reseteamos el formulario
+      this.equipo = {
+        nombre: '',
+        jugadores: []
       };
-      
-      console.log('Equipo a registrar:', equipoRegistrado);
-      
-      // Reseteamos el formulario completo
-      this.equipo.nombre = '';
-      this.equipo.jugadores = [];
       form.resetForm();
     }
+  }
+
+  eliminarEquipo(index: number) {
+    this.equipos.splice(index, 1);
+  }
+
+  obtenerNombreJugador(id: number): string {
+    const jugador = this.jugadoresDisponibles.find(j => j.id === id);
+    return jugador ? jugador.nombre : 'Jugador no encontrado';
   }
 }

@@ -1,6 +1,7 @@
 <div class="d-flex flex-column align-items-center justify-content-center">
+  <!-- Mensajes de error/éxito podrían ir aquí -->
   <div class="mt-4">
-    <h3>Registro de Jugador</h3>
+    <h3>{{ modoEdicion ? 'Editar' : 'Registro de' }} Jugador</h3>
     <form #jugadorForm="ngForm" (ngSubmit)="onSubmit(jugadorForm)">
       <div class="form-group">
         <label for="nombre">Nombre del Jugador</label>
@@ -67,25 +68,38 @@
         </div>
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-success mt-3"
-        [disabled]="jugadorForm.invalid"
-      >
-        Registrar Jugador
-      </button>
+      <div class="d-flex gap-2 mt-3">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="jugadorForm.invalid"
+        >
+          {{ modoEdicion ? 'Actualizar' : 'Registrar' }} Jugador
+        </button>
+        <button
+          *ngIf="modoEdicion"
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelarEdicion()"
+        >
+          Cancelar
+        </button>
+      </div>
     </form>
   </div>
 
-  <!-- Lista de jugadores registrados -->
   <div class="col-12 mt-4 d-flex flex-column align-items-center">
-    <!-- Mostrar mensaje si no hay jugadores registrados -->
-    <div *ngIf="jugadores.length === 0" class="alert alert-success mt-3">
+    <div *ngIf="jugadores.length === 0" class="alert alert-info mt-3">
       No hay jugadores registrados.
     </div>
     <div class="d-flex gap-3 flex-wrap">
-      <!-- Mostrar tarjetas si hay jugadores -->
-      <div *ngFor="let jugador of jugadores; let i = index" class="card my-2">
+      <div
+        *ngFor="let jugador of jugadores"
+        class="card my-2"
+        [class.border-primary]="jugador.id === this.jugador.id"
+        style="cursor: pointer;"
+        (click)="editarJugador(jugador)"
+      >
         <div class="card-header">
           <h4>{{ jugador.nombre }}</h4>
         </div>
@@ -98,7 +112,7 @@
           <button
             type="button"
             class="btn btn-danger"
-            (click)="eliminarJugador(i)"
+            (click)="eliminarJugador(jugador.id!, $event)"
           >
             Eliminar
           </button>
